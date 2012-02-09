@@ -1,4 +1,4 @@
-#!/bin/ruby1.9.1
+#!/usr/bin/ruby
 
 require 'socket'
 

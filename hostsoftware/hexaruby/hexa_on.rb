@@ -1,6 +1,6 @@
-#require 'rubygems'
+#!/usr/bin/ruby
+
 require 'socket'
-#gem 'digest-crc', '= 0.3.9'
 require 'digest/crc16_kermit.rb'
 
 port=61616
