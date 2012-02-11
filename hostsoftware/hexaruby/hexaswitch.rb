@@ -65,11 +65,9 @@ else
   exit
 end
 
-puts options[:hex]
-
 s=UDPSocket.new(Socket::AF_INET6)
 if options[:old] then
-  s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x10.to_i.chr, 0, ipv6adr, port
+  s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+(0x11-options[:hex].to_i(16)).chr, 0, ipv6adr, port
   puts 'old'
 else
   string = 0x48.to_i.chr+0x58.to_i.chr+0x30.to_i.chr+0x42.to_i.chr+0x04.to_i.chr+0x00.to_i.chr+0x01.to_i.chr+0x01.to_i.chr+options[:hex].to_i(16).chr
