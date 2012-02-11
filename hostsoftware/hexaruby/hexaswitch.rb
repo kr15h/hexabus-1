@@ -76,7 +76,7 @@ if options[:old] then
   s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+(0x11-options[:hex].to_i(16)).chr, 0, ipv6adr, port
 else
   # Neues Protokoll, HX0B(0x48+0x58+0x30+0x42)+0x04+0x00+0x01+0x01+ 0x01 für ein und 0x00 für aus
-  string = 0x48.to_i.chr+0x58.to_i.chr+0x30.to_i.chr+0x42.to_i.chr+0x04.to_i.chr+0x00.to_i.chr+0x01.to_i.chr+0x01.to_i.chr+options[:hex].to_i(16).chr
+  string = 'HX0B'+0x04.to_i.chr+0x00.to_i.chr+0x01.to_i.chr+0x01.to_i.chr+options[:hex].to_i(16).chr
   # Berechnung der Checksumme aus dem String nach CRC16Kermit
   checksum = Digest::CRC16KERMIT.hexdigest(string)
   # Senden des String + Checksumme in 2 Byte
