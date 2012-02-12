@@ -8,6 +8,7 @@ port=61616
 # Array mit Adressen zum vereinfachten Zugriff via -n
 addr=["aaaa::50:c4ff:fe04:81fd","aaaa::50:c4ff:fe04:8455"]
 options = {}
+hexapack = {}
 # Parser für die Komandozeilenparameter
 optparse = OptionParser.new do |opts|
   opts.banner = 'Usage: hexaswitch.rb [options] on/off'
@@ -61,14 +62,19 @@ end
 
 # Hex Zahl für Zustand
 if options[:state] == 'on' then
-  options[:hex] = "0x01"
+  hexapack[:value] = "0x01"
 elsif options[:state] == 'off' then
-  options[:hex] = "0x00"
+  hexapack[:value] = "0x00"
 else
   puts 'on/off'
   exit
 end
 
+#defaults
+hexapack[:pak_typ]="0x04"
+hexapack[:flags]="0x00"
+hexapack[:eid]="0x01"
+hexapack[:dat_typ]="0x01"
 # Senden des Zustand nach neuem und altem Protokoll
 s=UDPSocket.new(Socket::AF_INET6)
 if options[:old] then
@@ -76,7 +82,7 @@ if options[:old] then
   s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+(0x11-options[:hex].to_i(16)).chr, 0, ipv6adr, port
 else
   # Neues Protokoll, HX0B(0x48+0x58+0x30+0x42)+0x04+0x00+0x01+0x01+ 0x01 für ein und 0x00 für aus
-  string = 'HX0B'+0x04.to_i.chr+0x00.to_i.chr+0x01.to_i.chr+0x01.to_i.chr+options[:hex].to_i(16).chr
+  string = 'HX0B'+hexapack[:pak_typ].to_i(16).chr+hexapack[:flags].to_i(16).chr+hexapack[:eid].to_i(16).chr+hexapack[:dat_typ].to_i(16).chr+hexapack[:value].to_i(16).chr
   # Berechnung der Checksumme aus dem String nach CRC16Kermit
   checksum = Digest::CRC16KERMIT.hexdigest(string)
   # Senden des String + Checksumme in 2 Byte
