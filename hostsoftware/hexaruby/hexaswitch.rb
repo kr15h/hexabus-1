@@ -60,6 +60,24 @@ else
   exit
 end
 
+class Hexaruby
+  def initialize(ipv6,port)
+    @ipv6 = ipv6
+    @port = port
+    @pak_typ = ""
+    @flags = ""
+    @eid = ""
+    @dat_typ = ""
+    @value = ""
+  end
+  def send_old
+  
+  end
+end
+    
+
+
+
 # Hex Zahl für Zustand
 if options[:state] == 'on' then
   hexapack[:value] = "0x01"
