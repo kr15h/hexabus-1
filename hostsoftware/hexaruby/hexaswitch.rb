@@ -70,13 +70,25 @@ class Hexaruby
     @dat_typ = ""
     @value = ""
   end
-  def send_old
-  
+
+  def set_ipv6(ipv6)
+    if ipv6 != nil then
+      @ipv6 = ipv6
+    end
   end
-end
+  
+  def set_port(port)
+    if port != nil then
+      @port = port
+    end
+  end  
+
+  def send_old
     
-
-
+  end
+  def open_socket
+    @s = UDPSocket.new(Socket::AF_INET6)
+end
 
 # Hex Zahl für Zustand
 if options[:state] == 'on' then
