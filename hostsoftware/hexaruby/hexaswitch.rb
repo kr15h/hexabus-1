@@ -64,11 +64,7 @@ class Hexaruby
   def initialize(ipv6adr,port)
     @ipv6adr = ipv6adr
     @port = port
-    @pak_typ = ""
     @flags = to_chr("0x00")
-    @eid = ""
-    @dat_typ = ""
-    @value = ""
   end
 
   def set_ipv6adr(ipv6adr)
@@ -92,16 +88,24 @@ class Hexaruby
   def send_state(state)
     eid=to_chr("0x01")
     dat_typ=to_chr("0x01")
-    pak_typ=to_chr("0x04")
     if state == 'on' then
       value = to_chr("0x01")
     elsif state == 'off' then
       value = to_chr("0x00")
     end
+    write(eid,dat_typ,value)
+  end
+  def send(pak_typ,eid,dat_typ,value)
+  if pak_typ == 0x04 then 
+    write(eid,dat_typ,value)
+  end
+  end
+  def write(eid,dat_typ,value)
+    pak_typ=to_chr("0x04")
     string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
     sum = checksum(string)
     open_socket
-    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ipv6adr, @port 
+    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ipv6adr, @port
     close_socket
   end
   def to_chr(str)
