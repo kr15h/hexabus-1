@@ -25,8 +25,8 @@ target_link_libraries(hexalog
   hexabus
   pthread
   ${Boost_LIBRARIES}
-  ${SQLITE3_LIBRARIES}
   klio
+  ${SQLITE3_LIBRARIES}
 )
 
 # add programs to the install target 
