@@ -88,9 +88,9 @@ class Hexaruby
   def send_state(state)
     eid=to_chr("0x01")
     dat_typ=to_chr("0x01")
-    if state == 'on' then
+    if state.downcase == 'on' then
       value = to_chr("0x01")
-    elsif state == 'off' then
+    elsif state.downcase == 'off' then
       value = to_chr("0x00")
     end
     write(eid,dat_typ,value)
@@ -117,13 +117,18 @@ class Hexaruby
 end
 
 # Senden des Zustand nach neuem und altem Protokoll
-s=UDPSocket.new(Socket::AF_INET6)
 if options[:old] then
+  s=UDPSocket.new(Socket::AF_INET6)
   # Altes Protokoll, HEXABUS0100 + 11 für aus und 10 für an
-  s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+(0x11-options[:hex].to_i(16)).chr, 0, ipv6adr, port
+  if options[:state].downcase == "on" then
+    string = 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x10.to_i.chr
+  elsif options[:state].downcase == "off" then
+    string = 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x11.to_i.chr
+  end
+  s.send string, 0, ipv6adr, port
+  s.close
 else
   foo=Hexaruby.new(ipv6adr,port)
   foo.send_state(options[:state])
 end
-s.close
 puts "Send!"
