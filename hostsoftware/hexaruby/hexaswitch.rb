@@ -45,7 +45,6 @@ optparse.parse!
 # Prüfen ob der Zusatnds Parameter vorhanden ist, wenn nicht Fehler ausgeben.
 if ARGV.count == 1 then
   options[:state] = ARGV[0].downcase
-  puts options[:state]
 elsif ARGV.count > 1 then
   puts 'Zu viele Parameter'
   exit
@@ -62,8 +61,8 @@ else
 end
 
 class Hexaruby
-  def initialize(ipv6,port)
-    @ipv6 = ipv6
+  def initialize(ipv6adr,port)
+    @ipv6adr = ipv6adr
     @port = port
     @pak_typ = ""
     @flags = to_chr("0x00")
@@ -72,9 +71,9 @@ class Hexaruby
     @value = ""
   end
 
-  def set_ipv6(ipv6)
-    if ipv6 != nil then
-      @ipv6 = ipv6
+  def set_ipv6adr(ipv6adr)
+    if ipv6adr != nil then
+      @ipv6adr = ipv6adr
     end
   end
   
@@ -91,11 +90,9 @@ class Hexaruby
     @s.close
   end
   def send_state(state)
-    eid=to_chr("0x04")
+    eid=to_chr("0x01")
     dat_typ=to_chr("0x01")
     pak_typ=to_chr("0x04")
-    puts "Test123"
-    puts state
     if state == 'on' then
       value = to_chr("0x01")
     elsif state == 'off' then
