@@ -45,6 +45,7 @@ optparse.parse!
 # Prüfen ob der Zusatnds Parameter vorhanden ist, wenn nicht Fehler ausgeben.
 if ARGV.count == 1 then
   options[:state] = ARGV[0].downcase
+  puts options[:state]
 elsif ARGV.count > 1 then
   puts 'Zu viele Parameter'
   exit
@@ -65,7 +66,7 @@ class Hexaruby
     @ipv6 = ipv6
     @port = port
     @pak_typ = ""
-    @flags = ""
+    @flags = to_chr("0x00")
     @eid = ""
     @dat_typ = ""
     @value = ""
@@ -83,40 +84,45 @@ class Hexaruby
     end
   end  
 
-  def send_old
-    
-  end
   def open_socket
     @s = UDPSocket.new(Socket::AF_INET6)
+  end
+  def close_socket
+    @s.close
+  end
+  def send_state(state)
+    eid=to_chr("0x04")
+    dat_typ=to_chr("0x01")
+    pak_typ=to_chr("0x04")
+    puts "Test123"
+    puts state
+    if state == 'on' then
+      value = to_chr("0x01")
+    elsif state == 'off' then
+      value = to_chr("0x00")
+    end
+    string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
+    sum = checksum(string)
+    open_socket
+    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ipv6adr, @port 
+    close_socket
+  end
+  def to_chr(str)
+    return  str.to_i(16).chr
+  end
+  def checksum(string)
+    return Digest::CRC16KERMIT.hexdigest(string)
+  end   
 end
 
-# Hex Zahl für Zustand
-if options[:state] == 'on' then
-  hexapack[:value] = "0x01"
-elsif options[:state] == 'off' then
-  hexapack[:value] = "0x00"
-else
-  puts 'on/off'
-  exit
-end
-
-#defaults
-hexapack[:pak_typ]="0x04"
-hexapack[:flags]="0x00"
-hexapack[:eid]="0x01"
-hexapack[:dat_typ]="0x01"
 # Senden des Zustand nach neuem und altem Protokoll
 s=UDPSocket.new(Socket::AF_INET6)
 if options[:old] then
   # Altes Protokoll, HEXABUS0100 + 11 für aus und 10 für an
   s.send 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+(0x11-options[:hex].to_i(16)).chr, 0, ipv6adr, port
 else
-  # Neues Protokoll, HX0B(0x48+0x58+0x30+0x42)+0x04+0x00+0x01+0x01+ 0x01 für ein und 0x00 für aus
-  string = 'HX0B'+hexapack[:pak_typ].to_i(16).chr+hexapack[:flags].to_i(16).chr+hexapack[:eid].to_i(16).chr+hexapack[:dat_typ].to_i(16).chr+hexapack[:value].to_i(16).chr
-  # Berechnung der Checksumme aus dem String nach CRC16Kermit
-  checksum = Digest::CRC16KERMIT.hexdigest(string)
-  # Senden des String + Checksumme in 2 Byte
-  s.send string+checksum[0..1].to_i(16).chr+checksum[2..3].to_i(16).chr, 0, ipv6adr, port
+  foo=Hexaruby.new(ipv6adr,port)
+  foo.send_state(options[:state])
 end
 s.close
 puts "Send!"
