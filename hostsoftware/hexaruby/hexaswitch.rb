@@ -100,7 +100,7 @@ class Hexaruby
     write(eid,dat_typ,value)
   end
   if pak_typ == 0x03 then
-    read(eid)
+    query(eid)
   end
   end
   def write(eid,dat_typ,value)
@@ -112,17 +112,17 @@ class Hexaruby
   end
   def send_s(string)
     sum = checksum(string)
-    puts string
-    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0,@ipv6adr
+    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0,@ipv6adr,@port
   end
 
-  def read(eid)
-    pak_typ=to_chr("0x03")  
+  def query(eid)
+    pak_typ=to_chr("0x02")  
     string = 'HX0B'+pak_typ+@flags+to_chr(eid)
     open_socket
     send_s(string)
-    @s.recv(100)
+    antw = @s.recv(100)
     close_socket
+    puts antw
   end
   def to_chr(str)
     return  str.to_i(16).chr
@@ -146,6 +146,6 @@ if options[:old] then
 else
   foo=Hexaruby.new(ipv6adr,port)
   foo.send_state(options[:state])
-  foo.read("0x01")
+  foo.query("0x01")
 end
 puts "Send!"
