@@ -99,14 +99,30 @@ class Hexaruby
   if pak_typ == 0x04 then 
     write(eid,dat_typ,value)
   end
+  if pak_typ == 0x03 then
+    query(eid)
+  end
   end
   def write(eid,dat_typ,value)
     pak_typ=to_chr("0x04")
     string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
-    sum = checksum(string)
     open_socket
-    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ipv6adr, @port
+    send_s(string)
     close_socket
+  end
+  def send_s(string)
+    sum = checksum(string)
+    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0,@ipv6adr,@port
+  end
+
+  def query(eid)
+    pak_typ=to_chr("0x02")  
+    string = 'HX0B'+pak_typ+@flags+to_chr(eid)
+    open_socket
+    send_s(string)
+    antw = @s.recv(100)
+    close_socket
+    puts antw[0].chr+antw[1].chr+antw[2].chr+antw[3].chr+antw[4].to_s+antw[5].to_s+antw[6].to_s+antw[7].to_s+antw[8].to_s
   end
   def to_chr(str)
     return  str.to_i(16).chr
@@ -130,5 +146,6 @@ if options[:old] then
 else
   foo=Hexaruby.new(ipv6adr,port)
   foo.send_state(options[:state])
+  foo.query("0x01")
 end
 puts "Send!"
