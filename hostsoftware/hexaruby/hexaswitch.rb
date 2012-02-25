@@ -122,7 +122,7 @@ class Hexaruby
     send_s(string)
     antw = @s.recv(100)
     close_socket
-    puts antw
+    puts antw[0].chr+antw[1].chr+antw[2].chr+antw[3].chr+antw[4].to_s+antw[5].to_s+antw[6].to_s+antw[7].to_s+antw[8].to_s
   end
   def to_chr(str)
     return  str.to_i(16).chr
