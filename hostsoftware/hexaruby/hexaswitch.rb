@@ -103,10 +103,21 @@ class Hexaruby
   def write(eid,dat_typ,value)
     pak_typ=to_chr("0x04")
     string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
-    sum = checksum(string)
     open_socket
-    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ipv6adr, @port
+    send_s(sting)
     close_socket
+  end
+  def send_s(string)
+    sum = checksum(string)
+    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0, @ip
+  end
+
+  def read(eid)
+    
+    @s.recv(100)
+
+
+
   end
   def to_chr(str)
     return  str.to_i(16).chr
