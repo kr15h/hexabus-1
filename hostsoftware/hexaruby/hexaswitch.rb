@@ -55,7 +55,6 @@ if ARGV.count == 1 then
   elsif arg == 'status'
     options[:status] = 1
   end
-  options[:state] = ARGV[0].downcase
 elsif ARGV.count > 1 then
   puts 'Zu viele Parameter'
   exit

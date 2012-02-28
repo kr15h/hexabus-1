@@ -35,9 +35,9 @@ class Hexaruby
   def send_state(state)
     eid=to_chr("0x01")
     dat_typ=to_chr("0x01")
-    if state.downcase == 'on' then
+    if state == 1 then
       value = to_chr("0x01")
-    elsif state.downcase == 'off' then
+    elsif state == 0 then
       value = to_chr("0x00")
     end
     write(eid,dat_typ,value)
