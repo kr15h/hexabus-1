@@ -45,6 +45,16 @@ optparse.parse!
 
 # Prüfen ob der Zusatnds Parameter vorhanden ist, wenn nicht Fehler ausgeben.
 if ARGV.count == 1 then
+  arg=ARGV[0].downcase
+  if arg == 'power'
+    options[:power] = 1
+  elsif arg == 'on'
+    options[:state] = 1
+  elsif arg == 'off'
+    options[:state] = 0
+  elsif arg == 'status'
+    options[:status] = 1
+  end
   options[:state] = ARGV[0].downcase
 elsif ARGV.count > 1 then
   puts 'Zu viele Parameter'
@@ -65,17 +75,24 @@ end
 if options[:old] then
   s=UDPSocket.new(Socket::AF_INET6)
   # Altes Protokoll, HEXABUS0100 + 11 für aus und 10 für an
-  if options[:state].downcase == "on" then
+  if options[:state] == 1 then
     string = 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x10.to_i.chr
-  elsif options[:state].downcase == "off" then
+  elsif options[:state] == 0 then
     string = 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x11.to_i.chr
+  elsif options[:status] != nil or options[:power] then
+    puts 'Im Alten Protokoll aktuell nicht m�glich'
+    exit
   end
   s.send string, 0, ipv6adr, port
   s.close
 else
   foo=Hexaruby.new(ipv6adr,port)
-  foo.send_state(options[:state])
+  if options[:state] != nil then 
+    foo.send_state(options[:state])
+  elsif options[:status] == 1 then
   foo.query("0x01")
-  foo.query("0x02")
+  elsif options[:power] == 1 then
+    foo.query("0x02")
+  end
 end
 puts "Send!"
