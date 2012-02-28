@@ -12,7 +12,7 @@ options = {}
 hexapack = {}
 # Parser für die Komandozeilenparameter
 optparse = OptionParser.new do |opts|
-  opts.banner = 'Usage: hexaswitch.rb [options] on/off'
+  opts.banner = 'Usage: hexaswitch.rb [options] on/off/power/status'
   opts.separator ' '
   
   opts.on_tail('-h', '--help', 'Bitte Parameter angeben') do
