@@ -61,6 +61,7 @@ else
   exit
 end
 
+# Senden des Zustand nach neuem und altem Protokoll
 if options[:old] then
   s=UDPSocket.new(Socket::AF_INET6)
   # Altes Protokoll, HEXABUS0100 + 11 für aus und 10 für an
