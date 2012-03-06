@@ -89,8 +89,15 @@ class Hexaruby
        if antw[7] <= 2 then
          data[:data] = antw[8]
        else
-         data[:data] = (antw[8..(Dat[antw[7]]+7)])
-       end  
+         roh = (antw[8..(Dat[antw[7]]+7)])
+         l=(roh.length)-1
+         y = []
+         for n in (0..l)
+           y[l-n] = roh[n]
+         end
+         puts y
+         data[:data]=y.to_i 
+      end  
     else
         puts 'Falsche Checksumme'
       end
