@@ -44,15 +44,15 @@ end
 optparse.parse!
 
 # Prüfen ob der Zusatnds Parameter vorhanden ist, wenn nicht Fehler ausgeben.
-if ARGV.count = 1 then
+if ARGV.count == 1 then
   arg=ARGV[0].downcase
-  if arg == 'power'
+  if arg == 'power' then
     options[:power] = 1
-  elsif arg == 'on'
+  elsif arg == 'on' then
     options[:state] = 1
-  elsif arg == 'off'
+  elsif arg == 'off' then
     options[:state] = 0
-  elsif arg == 'status'
+  elsif arg == 'status' then
     options[:status] = 1
   end
 elsif ARGV.count <= 3 then  
