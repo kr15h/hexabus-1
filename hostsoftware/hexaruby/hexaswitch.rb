@@ -55,15 +55,19 @@ if ARGV.count == 1 then
   elsif arg == 'status' then
     options[:status] = 1
   end
-elsif ARGV.count <= 3 then  
+elsif ARGV.count <= 4 then 
+  options[:set] = 0
+  options[:get] = 0 
   if ARGV[0].downcase == "set"
-    options[:eid] = ARGV[1]
-    options[:value] = ARGV[2]
+    options[:set] = 1
+    options[:eid] = ARGV[1].to_i
+    options[:dat_typ] = ARGV[2].to_i
+    options[:value] = ARGV[3].to_i
   elsif ARGV[0].downcase == "get"
+    options[:get] = 1
     options[:eid] = ARGV[1]
-    options[:value] = ARGV[2]
   end
-elsif ARGV.count > 3 then
+elsif ARGV.count > 4 then
   puts 'Zu viele Parameter'
   exit
 end
@@ -100,6 +104,10 @@ else
   foo.query("0x01")
   elsif options[:power] == 1 then
     foo.query("0x02")
+  elsif options[:get] == 1 then
+    foo.query(options[:eid].to_s(16))
+  elsif options[:set] == 1 then
+    foo.write(options[:eid].to_s(16),options[:dat_typ].to_s(16),options[:value].to_s(16))
   end
 end
 puts "Send!"
