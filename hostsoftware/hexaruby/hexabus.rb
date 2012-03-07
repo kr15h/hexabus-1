@@ -69,7 +69,7 @@ class Hexaruby
     pak_typ=0x04
     pak = ['HX0B',pak_typ,@flags,eid,dat_typ,value]
     puts pak
-    string = pak.pack("a4C3"+NTyp[dat_typ])
+    string = pak.pack("a4C4"+NTyp[dat_typ])
     puts string
     send_s(string)
   end
