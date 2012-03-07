@@ -61,6 +61,7 @@ class Hexaruby
   def write(eid,dat_typ,value)
     pak_typ=to_chr("0x04")
     string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
+    puts string
     send_s(string)
   end
 
