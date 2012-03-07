@@ -6,6 +6,7 @@ require 'digest/crc16_kermit.rb'
 
 class Hexaruby
   Dat = [0,1,1,4,4,4,128,4]
+  Typ = [nil,"N",nil,"N","g"]
   def initialize(ipv6adr,port)
     @ipv6adr = ipv6adr
     @port = port
@@ -90,7 +91,11 @@ class Hexaruby
          data[:data] = antw[8]
        else
          roh = (antw[8..(Dat[antw[7]]+7)])
-         y=roh.unpack("N")
+         if Typ[antw[7]] != nil then
+           y=roh.unpack(Typ[antw[7]])
+         else
+           y=roh[0]
+         end
          data[:data]=y 
       end  
     else
