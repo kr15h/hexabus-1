@@ -65,7 +65,7 @@ elsif ARGV.count <= 4 then
     options[:value] = ARGV[3].to_i
   elsif ARGV[0].downcase == "get"
     options[:get] = 1
-    options[:eid] = ARGV[1]
+    options[:eid] = ARGV[1].to_i
   end
 elsif ARGV.count > 4 then
   puts 'Zu viele Parameter'
@@ -101,13 +101,13 @@ else
   if options[:state] != nil then 
     foo.send_state(options[:state])
   elsif options[:status] == 1 then
-  foo.query("0x01")
+  foo.query(1)
   elsif options[:power] == 1 then
-    foo.query("0x02")
+    foo.query(2)
   elsif options[:get] == 1 then
-    foo.query(options[:eid].to_s(16))
+    foo.query(options[:eid])
   elsif options[:set] == 1 then
-    foo.write(options[:eid].to_s(16),options[:dat_typ].to_s(16),options[:value].to_s(16))
+    foo.write(options[:eid],options[:dat_typ],options[:value])
   end
 end
 puts "Send!"

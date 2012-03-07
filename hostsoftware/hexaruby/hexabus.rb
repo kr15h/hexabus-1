@@ -68,20 +68,21 @@ class Hexaruby
   def write(eid,dat_typ,value)
     pak_typ=0x04
     pak = ['HX0B',pak_typ,@flags,eid,dat_typ,value]
-    puts pak
     string = pak.pack("a4C4"+NTyp[dat_typ])
-    puts string
     send_s(string)
   end
 
   def send_s(string)
     sum = checksum(string)
-    @s.send string+to_chr(sum[0..1])+to_chr(sum[2..3]),0,@ipv6adr,@port
+    x = [sum[0..1].to_i(16),sum[2..3].to_i(16)]
+    y = x.pack("CC")
+    @s.send string+y,0,@ipv6adr,@port
   end
 
   def query(eid)
     pak_typ=2  
-    string = 'HX0B'+pak_typ+@flags+to_chr(eid)
+    pak = ['HX0B',pak_typ,@flags,eid]
+    string = pak.pack("a4C3")
     send_s(string)
     antw = @s.recv(100)
     puts parse(antw)
@@ -101,8 +102,8 @@ class Hexaruby
          data[:data] = antw[8]
        else
          roh = (antw[8..(Dat[antw[7]]+7)])
-         if NTyp[antw[7]] != nil then
-           y=roh.unpack(NTyp[antw[7]])
+         if BTyp[antw[7]] != nil then
+           y=roh.unpack(BTyp[antw[7]])
          else
            y=roh[0]
          end
