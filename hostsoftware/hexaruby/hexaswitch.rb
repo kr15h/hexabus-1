@@ -44,7 +44,7 @@ end
 optparse.parse!
 
 # Prüfen ob der Zusatnds Parameter vorhanden ist, wenn nicht Fehler ausgeben.
-if ARGV.count == 1 then
+if ARGV.count = 1 then
   arg=ARGV[0].downcase
   if arg == 'power'
     options[:power] = 1
@@ -55,7 +55,15 @@ if ARGV.count == 1 then
   elsif arg == 'status'
     options[:status] = 1
   end
-elsif ARGV.count > 1 then
+elsif ARGV.count <= 3 then  
+  if ARGV[0].downcase == "set"
+    options[:eid] = ARGV[1]
+    options[:value] = ARGV[2]
+  elsif ARGV[0].downcase == "get"
+    options[:eid] = ARGV[1]
+    options[:value] = ARGV[2]
+  end
+elsif ARGV.count > 3 then
   puts 'Zu viele Parameter'
   exit
 end
