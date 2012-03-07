@@ -6,11 +6,13 @@ require 'digest/crc16_kermit.rb'
 
 class Hexaruby
   Dat = [0,1,1,4,4,4,128,4]
-  Typ = [nil,"N",nil,"N","g"]
+  BTyp = [nil,"C","C","N",nil,"g","a128","N"]
+  NTyp = [nil,"C","C","L",nil,"F","a128","L"]
+
   def initialize(ipv6adr,port)
     @ipv6adr = ipv6adr
     @port = port
-    @flags = to_chr("0x00")
+    @flags = 0x00
     open_socket
   end
 
@@ -28,27 +30,32 @@ class Hexaruby
 
   def open_socket
     @s = UDPSocket.new(Socket::AF_INET6)
-    @s.bind(nil,61616)
+    #@s.bind(nil,61616)
   end
+
   def close_socket
     @s.close
   end
+
   def send_state(state)
-    eid=to_chr("0x01")
-    dat_typ=to_chr("0x01")
+    eid=0x01
+    dat_typ=0x01
     if state == 1 then
-      value = to_chr("0x01")
+      value = 0x01
     elsif state == 0 then
-      value = to_chr("0x00")
+      value = 0x00
     end
     write(eid,dat_typ,value)
   end
+
   def on
-    write("0x01","0x01","0x01")
+    write(0x01,0x01,0x01)
   end
+
   def off
-    write("0x01","0x01","0x00")
+    write(0x01,0x01,0x00)
   end
+
   def send(pak_typ,eid,dat_typ,value)
   if pak_typ == 0x04 then 
     write(eid,dat_typ,value)
@@ -59,8 +66,10 @@ class Hexaruby
   end
 
   def write(eid,dat_typ,value)
-    pak_typ=to_chr("0x04")
-    string = 'HX0B' + pak_typ + @flags + eid + dat_typ + value
+    pak_typ=0x04
+    pak = ['HX0B',pak_typ,@flags,eid,dat_typ,value]
+    puts pak
+    string = pak.pack("a4C3"+NTyp[dat_typ])
     puts string
     send_s(string)
   end
@@ -71,7 +80,7 @@ class Hexaruby
   end
 
   def query(eid)
-    pak_typ=to_chr("0x02")  
+    pak_typ=2  
     string = 'HX0B'+pak_typ+@flags+to_chr(eid)
     send_s(string)
     antw = @s.recv(100)
@@ -92,8 +101,8 @@ class Hexaruby
          data[:data] = antw[8]
        else
          roh = (antw[8..(Dat[antw[7]]+7)])
-         if Typ[antw[7]] != nil then
-           y=roh.unpack(Typ[antw[7]])
+         if NTyp[antw[7]] != nil then
+           y=roh.unpack(NTyp[antw[7]])
          else
            y=roh[0]
          end
