@@ -6,8 +6,8 @@ require 'digest/crc16_kermit.rb'
 
 class Hexaruby
   Dat = [0,1,1,4,4,4,128,4]
-  ETyp = ["L","C","N","C","N","g"]
-  DTyp = [nil,"N",nil,"N","g"]
+  BTyp = [nil,"C","C","N",nil,"g","a128","N"]
+  NTyp = [nil,"C","C","L",nil,"F","a128","L"]
 
   def initialize(ipv6adr,port)
     @ipv6adr = ipv6adr
@@ -66,12 +66,11 @@ class Hexaruby
   end
 
   def write(eid,dat_typ,value)
-    puts eid
-    puts dat_typ
-    puts value
     pak_typ=0x04
     pak = ['HX0B',pak_typ,@flags,eid,dat_typ,value]
-    string = pak.pack("a4C3"+TYP[dat_typ])
+    puts pak
+    string = pak.pack("a4C3"+NTyp[dat_typ])
+    puts string
     send_s(string)
   end
 
@@ -102,8 +101,8 @@ class Hexaruby
          data[:data] = antw[8]
        else
          roh = (antw[8..(Dat[antw[7]]+7)])
-         if DTyp[antw[7]] != nil then
-           y=roh.unpack(DTyp[antw[7]])
+         if NTyp[antw[7]] != nil then
+           y=roh.unpack(NTyp[antw[7]])
          else
            y=roh[0]
          end
