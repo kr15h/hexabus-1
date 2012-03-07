@@ -90,13 +90,8 @@ class Hexaruby
          data[:data] = antw[8]
        else
          roh = (antw[8..(Dat[antw[7]]+7)])
-         l=(roh.length)-1
-         y = []
-         for n in (0..l)
-           y[l-n] = roh[n]
-         end
-         puts y
-         data[:data]=y.to_i 
+         y=roh.unpack("N")
+         data[:data]=y 
       end  
     else
         puts 'Falsche Checksumme'
