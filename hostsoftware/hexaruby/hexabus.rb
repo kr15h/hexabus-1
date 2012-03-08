@@ -73,10 +73,7 @@ class Hexaruby
   end
 
   def send_s(string)
-    sum = checksum(string)
-    x = [sum[0..1].to_i(16),sum[2..3].to_i(16)]
-    y = x.pack("CC")
-    @s.send string+y,0,@ipv6adr,@port
+    @s.send checksum(string),0,@ipv6adr,@port
   end
 
   def query(eid)
@@ -92,9 +89,8 @@ class Hexaruby
     data = {}
     len = 7+Dat[antw[7]]+2
     if antw[0..3] =='HX0B' then
-      sum = checksum(antw[0..len-2])
-      check = to_chr(sum[0..1])+to_chr(sum[2..3])
-      if antw[len-1..len] == check then
+      check = checksum(antw[0..len-2])
+      if antw == check then
        data[:pak_typ] = antw[4]
        data[:eid] = antw[6]
        data[:dat_typ] = antw[7]
@@ -123,6 +119,8 @@ class Hexaruby
   end
 
   def checksum(string)
-    return Digest::CRC16KERMIT.hexdigest(string)
+    sum = Digest::CRC16KERMIT.hexdigest(string)
+    y = [sum[0..1].to_i(16),sum[2..3].to_i(16)]
+    return string+y.pack("CC")
   end
 end
