@@ -114,10 +114,6 @@ class Hexaruby
    return data
   end
 
-  def to_chr(str)
-    return  str.to_i(16).chr
-  end
-
   def checksum(string)
     sum = Digest::CRC16KERMIT.hexdigest(string)
     y = [sum[0..1].to_i(16),sum[2..3].to_i(16)]
