@@ -12,7 +12,7 @@ options = {}
 hexapack = {}
 # Parser fÃ¼r die Komandozeilenparameter
 optparse = OptionParser.new do |opts|
-  opts.banner = 'Usage: hexaswitch.rb [options] on/off/power/status'
+  opts.banner = "Usage: hexaswitch.rb [options] comand \ncomands:\non\t\t\tEin\noff\t\t\tAus\npower\t\t\tStromaufnahme\nstatus\t\t\tStatus der Steckdose\nset EID datatyp value\tSetzen eines Wert (value) für eine EID\nget EID\t\t\tAbfragen eines Wertes\n"
   opts.separator ' '
   
   opts.on_tail('-h', '--help', 'Bitte Parameter angeben') do
@@ -55,6 +55,11 @@ if ARGV.count == 1 then
   elsif arg == 'status' then
     options[:status] = 1
   end
+elsif ARGV.count <= 2 then
+  if ARGV[0].downcase == "get"
+    options[:get] = 1
+    options[:eid] = ARGV[1].to_i
+  end
 elsif ARGV.count <= 4 then 
   options[:set] = 0
   options[:get] = 0 
@@ -63,9 +68,6 @@ elsif ARGV.count <= 4 then
     options[:eid] = ARGV[1].to_i
     options[:dat_typ] = ARGV[2].to_i
     options[:value] = ARGV[3].to_i
-  elsif ARGV[0].downcase == "get"
-    options[:get] = 1
-    options[:eid] = ARGV[1].to_i
   end
 elsif ARGV.count > 4 then
   puts 'Zu viele Parameter'
@@ -91,7 +93,7 @@ if options[:old] then
   elsif options[:state] == 0 then
     string = 'HEXABUS'+0x01.to_i.chr+0x00.to_i.chr+0x11.to_i.chr
   elsif options[:status] != nil or options[:power] then
-    puts 'Im Alten Protokoll aktuell nicht mÃglich'
+    puts 'Im Alten Protokoll aktuell nicht moeglich'
     exit
   end
   s.send string, 0, ipv6adr, port
@@ -108,6 +110,7 @@ else
     foo.query(options[:eid])
   elsif options[:set] == 1 then
     foo.write(options[:eid],options[:dat_typ],options[:value])
+  else
+    puts "Nothing to do"
   end
 end
-puts "Send!"
