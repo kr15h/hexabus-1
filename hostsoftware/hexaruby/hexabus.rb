@@ -40,12 +40,7 @@ class Hexaruby
   def send_state(state)
     eid=0x01
     dat_typ=0x01
-    if state == 1 then
-      value = 0x01
-    elsif state == 0 then
-      value = 0x00
-    end
-    write(eid,dat_typ,value)
+    write(eid,dat_typ,state)
   end
 
   def on
@@ -56,23 +51,14 @@ class Hexaruby
     write(0x01,0x01,0x00)
   end
 
-  def send(pak_typ,eid,dat_typ,value)
-  if pak_typ == 0x04 then 
-    write(eid,dat_typ,value)
-  end
-  if pak_typ == 0x03 then
-    query(eid)
-  end
-  end
-
   def write(eid,dat_typ,value)
     pak_typ=0x04
     pak = ['HX0B',pak_typ,@flags,eid,dat_typ,value]
     string = pak.pack("a4C4"+NTyp[dat_typ])
-    send_s(string)
+    send(string)
   end
 
-  def send_s(string)
+  def send(string)
     @s.send checksum(string),0,@ipv6adr,@port
   end
 
@@ -80,7 +66,7 @@ class Hexaruby
     pak_typ=2  
     pak = ['HX0B',pak_typ,@flags,eid]
     string = pak.pack("a4C3")
-    send_s(string)
+    send(string)
     antw = @s.recv(100)
     puts parse(antw)
   end
