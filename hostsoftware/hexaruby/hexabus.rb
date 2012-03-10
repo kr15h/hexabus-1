@@ -30,7 +30,7 @@ class Hexaruby
 
   def open_socket
     @s = UDPSocket.new(Socket::AF_INET6)
-    #@s.bind(nil,61616)
+#    @s.bind(nil,61616)
   end
 
   def close_socket
