@@ -9,6 +9,7 @@ class Hexaruby
   BTyp = [nil,"C","C","N",nil,"g","a128","N"]
   NTyp = [nil,"C","C","L",nil,"F","a128","L"]
 
+  #Initialisierung: string ipv6adr, fixnum port
   def initialize(ipv6adr,port)
     @ipv6adr = ipv6adr
     @port = port
@@ -16,27 +17,31 @@ class Hexaruby
     open_socket
   end
 
+  #Setzen der Ipv6adresse: string ipv6adr
   def set_ipv6adr(ipv6adr)
     if ipv6adr != nil then
       @ipv6adr = ipv6adr
     end
   end
   
+  #Setzen des Port: fixnum port
   def set_port(port)
     if port != nil then
       @port = port
     end
   end  
 
+  #Öffnen des UDP IPV6 Socket
   def open_socket
     @s = UDPSocket.new(Socket::AF_INET6)
-    #@s.bind(nil,61616)
   end
 
+  #schleißen des Socket
   def close_socket
     @s.close
   end
 
+  #Senden 
   def send_state(state)
     eid=0x01
     dat_typ=0x01
