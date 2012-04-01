@@ -68,7 +68,11 @@ class Hexaruby
     string = pak.pack("a4C3")
     send(string)
     antw = @s.recv(100)
-    puts parse(antw)
+    parst = parse(antw)
+    puts "Paket Typ: "+parst[:pak_typ].to_s
+    puts "Eid: "+parst[:eid].to_s
+    puts "Daten Typ: "+parst[:dat_typ].to_s
+    puts "Daten: "+parst[:data].to_s
   end
 
   def parse(antw) 
