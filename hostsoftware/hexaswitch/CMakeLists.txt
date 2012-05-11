@@ -58,20 +58,23 @@ include(CMakeBackwardCompatibilityCXX)
 FIND_PACKAGE(Sqlite)
 # We depend on boost >= 1.46.1 because of the updated filesystem
 # library.
-FIND_PACKAGE(Boost 1.46.1 COMPONENTS iostreams program_options filesystem system)
+SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.47" "1.47.1" "1.48.0" "1.48"
+  "1.49.0" "1.49" "1.50.0" "1.50")
+SET(Boost_DETAILED_FAILURE_MSG true)
+FIND_PACKAGE(Boost 1.46.1 REQUIRED COMPONENTS program_options filesystem system)
 
 # Reflect the package structure
 add_subdirectory(libhexabus)
 add_subdirectory(src)
 
 # add some files to the installation target
-INSTALL(FILES README.txt LICENSE.txt DESTINATION share/doc/hexaswitch)
+INSTALL(FILES README.md LICENSE.txt DESTINATION share/doc/hexaswitch)
 
 # CPACK packaging
 INCLUDE(InstallRequiredSystemLibraries)
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "hexaswitch")
 SET(CPACK_PACKAGE_VENDOR "Fraunhofer ITWM")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR ${V_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${V_MINOR})
@@ -89,6 +92,7 @@ message("")
 message("***** Configuration *****")
 message("  prefix: ${CMAKE_INSTALL_PREFIX}")
 message("  boost include: ${Boost_INCLUDE_DIRS}")
+message("  boost libraries shortcut: ${Boost_LIBRARIES}")
 message("  boost program options lib: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message("  boost system lib: ${Boost_SYSTEM_LIBRARY}")
 message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")

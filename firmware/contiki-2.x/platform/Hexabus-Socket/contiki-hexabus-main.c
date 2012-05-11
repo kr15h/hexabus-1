@@ -138,8 +138,18 @@
 #if MEMORY_DEBUGGER_ENABLE
 #include "memory_debugger.h"
 #endif
-
-
+#if I2C_ENABLE
+#include "i2c.h"
+#endif
+#if HUMIDITY_ENABLE
+#include "humidity.h"
+#endif
+#if PRESSURE_ENABLE
+#include "pressure.h"
+#endif
+#if IR_RECEIVER_ENABLE
+#include "ir_receiver.h"
+#endif
 
 uint8_t nSensors = 0; //number of found temperature sensors
 
@@ -403,6 +413,18 @@ void initialize(void)
 
 #if ANALOGREAD_ENABLE
   analogread_init();
+#endif
+
+#if I2C_ENABLE
+  i2c_init();
+#endif
+ 
+#if PRESSURE_ENABLE
+  pressure_init();
+#endif
+
+#if IR_RECEIVER_ENABLE
+  ir_receiver_init();
 #endif
 
   /*Init Relay */
