@@ -10,6 +10,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR} 
   ${CMAKE_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${CMAKE_BINARY_DIR}/libhexabus
   ${Boost_INCLUDE_DIRS}
 )
 add_executable(hexaswitch ${hexaswitch_src})
@@ -17,7 +18,7 @@ add_executable(hexaswitch ${hexaswitch_src})
 target_link_libraries(hexaswitch 
   hexabus
   pthread
-  ${Boost_SYSTEM_LIBRARY}
+  ${Boost_LIBRARIES}
 )
 
 add_executable(hexalog ${hexalog_src})

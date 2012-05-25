@@ -5,6 +5,12 @@ if(POLICY CMP0011)
   cmake_policy(SET CMP0011 NEW)
 endif(POLICY CMP0011)
 
+if( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+   message(STATUS "Do not run cmake in the source directory")
+   message(STATUS "create an extra binary directory")
+   message(FATAL_ERROR "Exiting cmake here.")
+endif( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+
 # have the full monty in makefiles
 set(CMAKE_VERBOSE_MAKEFILE true)
 
@@ -12,7 +18,7 @@ SET(ENABLE_LOGGING 1)
 
 set(V_MAJOR 0)
 set(V_MINOR 4)
-set(V_PATCH 0)
+set(V_PATCH 1)
 
 # add a path where some libraries might be stored
 set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where many locally installed libraries can be found")
@@ -26,6 +32,20 @@ set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where m
 set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_ADDITIONAL_PATH}/include)
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${CMAKE_ADDITIONAL_PATH}/lib)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
+
+# Detect the system we're compiling on
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  SET(HAS_MACOS 1)
+ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  SET(HAS_MACOS 0)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET(HAS_LINUX 1)
+ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET(HAS_LINUX 0)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
 
 set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wno-non-virtual-dtor -g -fomit-frame-pointer")
 
@@ -72,6 +92,8 @@ INSTALL(FILES README.md LICENSE.txt DESTINATION share/doc/hexaswitch)
 
 # CPACK packaging
 INCLUDE(InstallRequiredSystemLibraries)
+SET(CPACK_GENERATOR "DEB" "STGZ" "TGZ" "TBZ2")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mathias Dalheimer")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "hexaswitch")
 SET(CPACK_PACKAGE_VENDOR "Fraunhofer ITWM")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
